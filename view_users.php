@@ -42,33 +42,26 @@ $sort = (isset($_GET['sort'])) ? $_GET['sort'] : 'rd';
 // Determine the sorting order:
 switch ($sort) {
 	case 'ln':
-		$order_by = 'last_name ASC';
+		$order_by = 'last_name';
 		break;
 	case 'fn':
-		$order_by = 'first_name ASC';
-		break;
-	case 'rd':
-		$order_by = 'registration_date ASC';
+		$order_by = 'first_name';
 		break;
 	default:
-		$order_by = 'registration_date ASC';
-		$sort = 'rd';
+		$order_by = 'last_name';
+		$sort = 'ln';
 		break;
 }
-
 // Define the query:
-$q = "SELECT last_name, first_name, DATE_FORMAT(registration_date, '%M %d, %Y') AS dr, user_id FROM users ORDER BY $order_by LIMIT $start, $display";
+$q = "SELECT last_name, first_name FROM customers ORDER BY $order_by LIMIT $start, $display";
 $r = @mysqli_query($dbc, $q); // Run the query.
 
 // Table header:
 echo '<table width="60%">
 <thead>
 <tr>
-	<th align="left"><strong>Edit</strong></th>
-	<th align="left"><strong>Delete</strong></th>
 	<th align="left"><strong><a href="view_users.php?sort=ln">Last Name</a></strong></th>
 	<th align="left"><strong><a href="view_users.php?sort=fn">First Name</a></strong></th>
-	<th align="left"><strong><a href="view_users.php?sort=rd">Date Registered</a></strong></th>
 </tr>
 </thead>
 <tbody>
@@ -79,11 +72,8 @@ $bg = '#eeeeee';
 while ($row = mysqli_fetch_array($r, MYSQLI_ASSOC)) {
 	$bg = ($bg=='#eeeeee' ? '#ffffff' : '#eeeeee');
 		echo '<tr bgcolor="' . $bg . '">
-		<td align="left"><a href="edit_user.php?id=' . $row['user_id'] . '">Edit</a></td>
-		<td align="left"><a href="delete_user.php?id=' . $row['user_id'] . '">Delete</a></td>
 		<td align="left">' . $row['last_name'] . '</td>
 		<td align="left">' . $row['first_name'] . '</td>
-		<td align="left">' . $row['dr'] . '</td>
 	</tr>
 	';
 } // End of WHILE loop.
